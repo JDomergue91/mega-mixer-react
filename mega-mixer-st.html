@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/html">
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mega Mixer</title>
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mega-mixer.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <script src="js/lodash/lodash.min.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+<!-- <div id="megaMix">
+    <div class="container-fluid d-flex flex-row justify-content-center align-items-center p-4">
+        <div class="h1">MEGA</div>
+        <div><img src="images/blender.png" width="90"></div>
+        <div class="h1">MIXER</div>
+    </div>
+
+    <div class="container-fluid d-flex tool-box flex-row justify-content-center align-items-center p-1">
+        <div>
+            <label>
+                <select>
+                    <option value="440">2</option>
+                    <option value="660">3</option>
+                    <option value="880" selected>4</option>
+                    <option value="1100">5</option>
+                    <option value="1320">6</option>
+                </select>
+            </label>
+        </div>
+        <div>
+            <button id="boutonPlacer">PLACER</button>
+        </div>
+        <div>
+            <button id="boutonInitialiser" disabled>REINITIALISER</button>
+        </div>
+    </div> -->
+    
+    <!-- <div id="sizer" style="width:660px;">
+        <div class="flipcard h">
+            <div class="front interrogation">
+                ?
+            </div>
+            <div class="back smiley">
+                <div class="prenom">Nom</div>
+                <div class="nom">Prenom</div>
+            </div>
+        </div>
+    </div> -->
+    
+</div>
+    <script type="text/babel">
+        function App() {
+            
+          const ListeApprenants = [
+                                    {nom: 'OZMANOV', prenom: 'Alik'},
+                                    {nom: 'DOMERGUE', prenom: 'Jonathan'},
+                                    {nom: 'BaAALI', prenom: 'Ike David'},
+                                    {nom: 'DETHIER', prenom: ' Maxime'},
+                                    {nom: 'PENTEADO', prenom: 'Anthony'},
+                                    {nom: 'PETIT', prenom: 'Wilfrid'}
+                                  ]
+          const [nbCard, setNbCard] = React.useState('880');
+          const [apprenants, setApprenants] = React.useState(ListeApprenants)
+          const [isPlaced, setIsPlaced] = React.useState(false);
+          const [isInitialized, setIsInitialized] = React.useState(true);
+          const [isFliped, setIsFliped] = React.useState(false);
+
+
+
+          const placerHandler = () => {
+                setIsPlaced(true);
+                setIsInitialized(false);
+                setIsFliped(true);
+
+                const mixedApprenants = _.shuffle(ListeApprenants);
+
+                setApprenants(mixedApprenants);
+            };
+
+            const reinitialiserHandler = () => {
+                setIsPlaced(false);
+                setIsInitialized(true);              
+
+            };
+
+            React.useEffect(() => {
+                const flipcards = document.querySelectorAll('.flipcard');
+
+                if (isPlaced) {
+                    flipcards.forEach((flipcard, index) => {
+                        setTimeout(() => {
+                            flipcard.classList.toggle('flip');
+                        }, 500 * index);
+                    })
+                  }
+                else if (isFliped == true) {
+                    flipcards.forEach((flipcard, index) => {
+                       
+                            flipcard.classList.toggle('flip');
+                        
+                    });
+                }
+              
+            }, [isPlaced]);
+          
+
+          function sizeChange(event) {
+            setNbCard(event.target.value)
+          }
+        
+
+        return (
+          <div>
+            <div 
+            className="container-fluid d-flex flex-row justify-content-center align-items-center p-4"
+            >
+              <div className="h1">MEGA</div>
+              <div><img src="images/blender.png" width="90px"/></div>
+              <div className="h1">MIXER</div>
+            </div>
+
+            <div className="container-fluid d-flex tool-box flex-row justify-content-center align-items-center p-1">
+              <div>
+                <label>
+                  <select id="numberSelect" onChange={sizeChange} value={nbCard} disabled={isPlaced}>
+                      <option value="440">2</option>
+                      <option value="660">3</option>
+                      <option value="880">4</option>
+                      <option value="1100">5</option>
+                      <option value="1320">6</option>
+                  </select>
+                </label>
+              </div>
+              <div>
+                <button id="boutonPlacer" 
+                  disabled={isPlaced}
+                  onClick={placerHandler}
+                  >
+                  PLACER
+                </button>
+              </div>
+              <div>
+                <button id="boutonInitialiser" 
+                  disabled={isInitialized}
+                  onClick={reinitialiserHandler}
+                  >
+                  REINITIALISER
+                </button>
+              </div>
+            </div>
+            <div
+            id='sizer'
+            style={{width: nbCard + 'px'}}
+            >
+              {apprenants.map((apprenant) =>(
+              
+                <div className='flipcard h'>
+                  <div className='front interrogation'>
+                    ?
+                  </div>
+                  <div 
+                  className="back smiley"
+                  style={{backgroundImage: "url(images/smiley/smiley-" + Math.floor(Math.random()*15+1) + ".png)"}}
+                  >
+                    <div className='prenom'>{apprenant.prenom}</div>
+                    <div className='nom'>{apprenant.nom}</div>
+                  </div>
+                </div>
+            ))}
+            </div>
+          </div>
+        );
+
+        }
+        ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+</body>
+
+
+</html>
